@@ -17,33 +17,25 @@ public class Election {
 		
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
-		Set<Ballots> ballotsSet = new DynamicSet<Ballots>(1);
-		
-//		Scanner c = new Scanner(candidates);
-//		Scanner s = new Scanner(ballotFile);
-//		String d = c.nextLine();
-//		String b = s.nextLine();
-//		Ballots b1 = new Ballots(b, d);
-//		
-//		System.out.println(b1.getBallotNumber() + " " + b1.getCandidateID());
-		
-		
+		Set<Ballots> ballotSet = new DynamicSet<Ballots>(1);
+
 		try (Scanner sc = new Scanner(ballotFile)) {
-			while (sc.hasNextLine()) {
-				String data = sc.nextLine();
-				Ballots b1 = new Ballots(data);
-				ballotsSet.add(b1);
-				System.out.println(b1.getCandidateID());
+			while (sc.hasNextLine()){
+				String inputBallotNumber = sc.nextLine();
+				Ballots ballot = new Ballots(inputBallotNumber);
+				ballotSet.add(ballot);
 			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		printSet(ballotsSet);
+		printSet(ballotSet);
 	}
+	
 	private static void printSet(Set<Ballots> set) {
 		for(Ballots s: set) {
 			System.out.println(s.getBallotNumber());
 		}
 	}
+	
 }
