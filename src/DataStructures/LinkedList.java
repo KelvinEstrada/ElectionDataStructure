@@ -122,7 +122,7 @@ public class LinkedList<E> implements List<E> {
 	}
 
 	@Override
-	public boolean remove(E obj) {
+	public boolean removeElement(E obj) {
 		Node curNode = header;
 		Node nextNode = curNode.getNext();
 
@@ -297,7 +297,7 @@ public class LinkedList<E> implements List<E> {
 			}
 			else {
 				result.add(curNode.getValue());
-				this.remove(curNode.getValue());
+				this.removeElement(curNode.getValue());
 				curNode = header;
 				nextNode = curNode.getNext();
 			}

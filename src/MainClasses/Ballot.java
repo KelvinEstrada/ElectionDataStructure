@@ -70,10 +70,30 @@ public class Ballot{
 		}
 		throw new NoSuchElementException();
 	}
-	public boolean eliminate(int candidateID) 
-	{
-		//TODO-METHOD
-		return false;
+	public boolean eliminate(int candidateID) {
+		Integer toBeRemoved = this.getIndex(candidateID);
+		return this.getVotes().remove(toBeRemoved);
+	}
+	public int getIndex(int candidateID) {
+		int target = -1;
+		if(this.getVotes().isEmpty()) {
+			return target;
+		}
+		for(int i = 0; i < this.getVotes().size(); i++) {
+			if(this.getVotes().get(i) == candidateID) {
+				target = i;
+				break;
+			}
+		}
+		return target;
+	}
+	
+	public int getRankedOne() {
+		return this.getVotes().get(0);
+	}
+	
+	public boolean isBlank() {
+		return this.getVotes().size() == 0;
 	}
 	
 }

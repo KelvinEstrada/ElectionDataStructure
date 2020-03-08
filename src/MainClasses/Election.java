@@ -6,12 +6,13 @@ import java.util.Scanner;
 
 import DataStructures.DynamicSet;
 import DataStructures.LinkedList;
+import Interfaces.List;
 import Interfaces.Set;
 
 public class Election {
 
-	private static final String BALLOTS = "/home/kelvin/eclipse-workspace/Project_1_DATA/src/Resources/ballots.csv";
-	private static final String CANDIDATES = "/home/kelvin/eclipse-workspace/Project_1_DATA/src/Resources/candidates.csv";
+	private static final String BALLOTS = "Resources/ballots.csv";
+	private static final String CANDIDATES = "Resources/candidates.csv";
 	
 	
 	@SuppressWarnings("resource")
@@ -20,6 +21,7 @@ public class Election {
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
 		Set<Ballot> ballotSet = new DynamicSet<Ballot>(5);
+		List<Integer> rankedOneList = new LinkedList<Integer>();
 		
 		Scanner scBallot = new Scanner(ballotFile);
 		Scanner scCandidates = new Scanner(candidates);
@@ -29,16 +31,12 @@ public class Election {
 			Ballot ballot = new Ballot(inputBallotNumber, scCandidates);
 			ballotSet.add(ballot);
 		}
-		for(Ballot s: ballotSet) {			
-			System.out.print(s.getBallotNumber() + ": ");
-			printList(s.getVotes());
-			System.out.println("");
-			System.out.println(s.getCandidateByRank(1));
-			System.out.println("");
-			
+		System.out.println("Number of ballots: " + countBallots(ballotSet));
+		System.out.println("Number of blank ballot: " + countBlankBallots(ballotSet));
+		System.out.println("Number of invalid ballots: " + invalidBallots(ballotSet));
+		for(Ballot b: ballotSet) {
+			rankedOneList.add(b.getRankedOne());
 		}
-		System.out.println("Total of one's in each ballot for candidate 2 are: " + countOnes(ballotSet, 5));
-		
 	}
 	@SuppressWarnings("unchecked")
 	private static <E> void printList(LinkedList<Integer> list) {
@@ -46,18 +44,32 @@ public class Election {
 		for(int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + " ");
 		}
-	}
-	
-	private static int countOnes(Set<Ballot> ballotSet, int candidateID) {
-		int count = 0;
+	}	
+	private static int countBallots(Set<Ballot> ballotSet) {
+		int validCount = 0;
 		for(Ballot b: ballotSet) {
-			for(int i = 0; i < b.getVotes().size(); i++) {
-				if(b.getCandidateByRank(1) == candidateID) {
-					count++;
-				}
+			if(b.isValidBallot()) {
+				validCount++;
 			}
 		}
-		return count;
+		return validCount;
 	}
-	
+	private static int countBlankBallots(Set<Ballot> ballotSet) {
+		int blankCount = 0;
+		for(Ballot b: ballotSet) {
+			if(b.isBlank()) {
+				blankCount++;
+			}
+		}
+		return blankCount;
+	}
+	private static int invalidBallots(Set<Ballot> ballotSet) {
+		int invalidCount = 0;
+		for(Ballot b: ballotSet) {
+			if(!b.isValidBallot()) {
+				invalidCount++;
+			}
+		}
+		return invalidCount;
+	}
 }

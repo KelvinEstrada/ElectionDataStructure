@@ -141,7 +141,7 @@ public class DoublyLinkedList<E> implements List<E> {
 
 	//Exercise 3
 	@Override
-	public boolean remove(E obj) {
+	public boolean removeElement(E obj) {
 		Node curNode = header;
 		Node nextNode = curNode.getNext();
 		

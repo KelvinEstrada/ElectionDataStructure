@@ -3,7 +3,7 @@ public interface List<E> extends Iterable<E> {
 
 	public void add(E obj);
 	public void add(int index, E obj);
-	public boolean remove(E obj);
+	public boolean removeElement(E obj);
 	public boolean remove(int index);
 	public int removeAll(E obj);
 	public E get(int index);
