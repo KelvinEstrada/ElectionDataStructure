@@ -29,14 +29,16 @@ public class Election {
 			Ballot ballot = new Ballot(inputBallotNumber, scCandidates);
 			ballotSet.add(ballot);
 		}
-		//printSet(ballotSet);
-		for(Ballot s: ballotSet) {
+		for(Ballot s: ballotSet) {			
 			System.out.print(s.getBallotNumber() + ": ");
 			printList(s.getVotes());
 			System.out.println("");
-			System.out.println("Candidate with rank 1 is: " + s.getCandidateByRank(0));
-			System.out.println("Rank for candidate 1 is: " + s.getRankByCandidate(1));
+			System.out.println(s.getCandidateByRank(1));
+			System.out.println("");
+			
 		}
+		System.out.println("Total of one's in each ballot for candidate 2 are: " + countOnes(ballotSet, 5));
+		
 	}
 	@SuppressWarnings("unchecked")
 	private static <E> void printList(LinkedList<Integer> list) {
@@ -44,6 +46,18 @@ public class Election {
 		for(int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + " ");
 		}
+	}
+	
+	private static int countOnes(Set<Ballot> ballotSet, int candidateID) {
+		int count = 0;
+		for(Ballot b: ballotSet) {
+			for(int i = 0; i < b.getVotes().size(); i++) {
+				if(b.getCandidateByRank(1) == candidateID) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 	
 }

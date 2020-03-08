@@ -1,6 +1,7 @@
 package MainClasses;
 
 
+import java.lang.instrument.IllegalClassFormatException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -15,6 +16,7 @@ public class Ballot{
 	//private fields
 	private int ballotNumber;
 	private LinkedList<Integer> votes;
+	private boolean isValidBallot = true;
 
 	public Ballot(String ballotString, Scanner candidates) {
 	/* An instance of the class stores all information regarding the ballot
@@ -23,13 +25,22 @@ public class Ballot{
 		String ballotValues[] = ballotString.split(",");
 		this.ballotNumber = Integer.parseInt(ballotValues[0]);	//Retrieves ballot number from string line and stores it as an integer value
 		this.votes = new LinkedList<Integer>();
+		int rankNum = 1;
 		for(int i = 1; i < ballotValues.length; i++) {
+			if(Integer.parseInt(ballotValues[i].substring(ballotValues[i].length()-1)) != rankNum) {
+				isValidBallot = false;
+			}
 			int candidateID = Integer.parseInt(ballotValues[i].substring(0,1));
 			/* The list's index is a reference to the rank given by the voter.
 			 * 
 			 */
 			this.votes.add(candidateID);
+			rankNum++;
 		}
+	}
+	
+	public boolean isValidBallot() {
+		return isValidBallot;
 	}
 	
 	public LinkedList<Integer> getVotes() {
@@ -40,8 +51,11 @@ public class Ballot{
 		return ballotNumber;
 	}
 	
+	/* Return candidate that has the given rank
+	 * 
+	 */
 	public int getCandidateByRank(int rank) {
-		return this.votes.get(rank);
+		return this.votes.get(rank - 1);
 	}
 	
 	/* Keep in mind index of the list refers to the rank given to the candidate
