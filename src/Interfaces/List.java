@@ -19,4 +19,5 @@ public interface List<E> extends Iterable<E> {
 	public int replaceAll(E e, E f);
 	public List<E> reverse();
 	public boolean findDuplicates();
+	public E[] toArray();
 }

@@ -329,4 +329,14 @@ public class LinkedList<E> implements List<E> {
 		}
 		return false;
 	}
+
+	@Override
+	public E[] toArray() {
+		@SuppressWarnings("unchecked")
+		E[] asArray = (E[]) new Object[this.size()];
+		for(int i = 0; i < this.size(); i++) {
+			asArray[i] = this.get(i);
+		}
+		return asArray;
+	}
 }

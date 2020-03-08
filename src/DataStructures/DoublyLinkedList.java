@@ -369,4 +369,14 @@ public class DoublyLinkedList<E> implements List<E> {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public E[] toArray() {
+		Object[] asArray = new Object[this.size()];
+		for(int i = 0; i < asArray.length; i++) {
+			asArray[i] = this.get(i);
+		}
+		return (E[]) asArray;
+	}
 }

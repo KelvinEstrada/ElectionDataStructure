@@ -35,7 +35,7 @@ public class StaticSet<E> implements Set<E> {
 
 		@Override
 		public T next() {
-			if (this.hasNext()) {
+			if (hasNext()) {
 				T result = (T) elements[this.currentPosition++];
 				return result;
 			}

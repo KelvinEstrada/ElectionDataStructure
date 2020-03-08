@@ -11,7 +11,7 @@ public class DynamicSet<E> implements Set<E> {
 	// current max capacity
 	private int maxCapacity;
 
-	private static final int DEFAULT_SET_SIZE = 10;
+	private static final int DEFAULT_SET_SIZE = 5;
 
 	public DynamicSet(int initialCapacity) {
 		this.theSet = new StaticSet<E>(initialCapacity);
