@@ -21,7 +21,7 @@ public class Election {
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
 		Set<Ballot> ballotSet = new DynamicSet<Ballot>(5);
-		List<Integer> rankedOneList = new LinkedList<Integer>();
+		LinkedList<Integer> rankedOneList = new LinkedList<Integer>();
 		
 		Scanner scBallot = new Scanner(ballotFile);
 		Scanner scCandidates = new Scanner(candidates);
@@ -37,6 +37,13 @@ public class Election {
 		for(Ballot b: ballotSet) {
 			rankedOneList.add(b.getRankedOne());
 		}
+		for(int i = 0; i < rankedOneList.size(); i++) {
+			System.out.print(rankedOneList.get(i) + " ");
+		}
+		System.out.println("");
+		System.out.println(getMin(rankedOneList));
+		ballotSet.iterator().next().eliminate(getMin(rankedOneList));
+		printList(ballotSet.iterator().next().getVotes());
 	}
 	@SuppressWarnings("unchecked")
 	private static <E> void printList(LinkedList<Integer> list) {
@@ -71,5 +78,19 @@ public class Election {
 			}
 		}
 		return invalidCount;
+	}
+	/*	Returns candidate with less one's in the Ranked One List
+	 * 
+	 */
+	private static int getMin(LinkedList<Integer> list) {
+		int minPos = list.count(list.get(0));
+		int minValue = -1;
+		for(int i = 0; i < list.size(); i++) {
+			if(minPos > list.count(list.get(i))) {
+				minPos = list.count(list.get(i));
+				minValue = list.get(i);
+			}
+		}
+		return minValue;
 	}
 }

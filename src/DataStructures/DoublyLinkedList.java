@@ -379,4 +379,10 @@ public class DoublyLinkedList<E> implements List<E> {
 		}
 		return (E[]) asArray;
 	}
+
+	@Override
+	public int count(E obj) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

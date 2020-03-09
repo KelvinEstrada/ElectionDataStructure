@@ -1,10 +1,7 @@
 package MainClasses;
-
-
 import java.lang.instrument.IllegalClassFormatException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-
 import DataStructures.DynamicSet;
 import DataStructures.LinkedList;
 import DataStructures.StaticSet;
@@ -20,7 +17,7 @@ public class Ballot{
 
 	public Ballot(String ballotString, Scanner candidates) {
 	/* An instance of the class stores all information regarding the ballot
-	 * Ballot number, candidate iD, List containing the votes that were cast
+	 * Ballot number, candidate iD and a List containing the votes that were cast by the voters
 	 */
 		String ballotValues[] = ballotString.split(",");
 		this.ballotNumber = Integer.parseInt(ballotValues[0]);	//Retrieves ballot number from string line and stores it as an integer value
@@ -38,28 +35,34 @@ public class Ballot{
 			rankNum++;
 		}
 	}
-	
+	/*	Returns true if the Ballot is valid
+	 *	 
+	 */
 	public boolean isValidBallot() {
 		return isValidBallot;
 	}
-	
+	/*	Returns List containing all the votes cast in the List
+	 * 
+	 */
 	public LinkedList<Integer> getVotes() {
 		return this.votes;
 	}
-	
+	/*	Return ballot number
+	 * 
+	 */
 	public int getBallotNumber() {
 		return ballotNumber;
 	}
 	
-	/* Return candidate that has the given rank
+	/*	Return candidate that has the given rank
 	 * 
 	 */
 	public int getCandidateByRank(int rank) {
 		return this.votes.get(rank - 1);
 	}
 	
-	/* Keep in mind index of the list refers to the rank given to the candidate
-	 * in that index/position within the List
+	/*	Keep in mind index of the list refers to the rank given to the candidate
+	 *	in that index/position within the List
 	 */
 	public int getRankByCandidate(int candidateID) {
 		for(int i = 0; i < this.votes.size(); i++) {
@@ -70,10 +73,17 @@ public class Ballot{
 		}
 		throw new NoSuchElementException();
 	}
+	/*	Eliminates candidate given its candidate ID from the actual Ballot
+	 * 
+	 */
 	public boolean eliminate(int candidateID) {
 		Integer toBeRemoved = this.getIndex(candidateID);
 		return this.getVotes().remove(toBeRemoved);
 	}
+	
+	/*	Retrieves position of the candidate in the List
+	 * 
+	 */
 	public int getIndex(int candidateID) {
 		int target = -1;
 		if(this.getVotes().isEmpty()) {
@@ -87,11 +97,15 @@ public class Ballot{
 		}
 		return target;
 	}
-	
+	/*	Return number one ranked candidate ID in the List
+	 * 
+	 */
 	public int getRankedOne() {
 		return this.getVotes().get(0);
 	}
-	
+	/*	Returns true if the List is blank (has no votes)
+	 * 
+	 */
 	public boolean isBlank() {
 		return this.getVotes().size() == 0;
 	}

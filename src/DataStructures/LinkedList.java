@@ -339,4 +339,19 @@ public class LinkedList<E> implements List<E> {
 		}
 		return asArray;
 	}
+
+	@Override
+	public int count(E obj) {
+		Node curNode = header;
+		Node nextNode = curNode.getNext();
+		int count = 0;
+		while(nextNode != null) {
+			if(nextNode.getValue().equals(obj)) {
+				count++;
+			}
+			curNode = nextNode;
+			nextNode = curNode.getNext();
+		}
+		return count;
+	}
 }

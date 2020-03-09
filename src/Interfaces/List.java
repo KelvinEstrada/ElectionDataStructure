@@ -20,4 +20,5 @@ public interface List<E> extends Iterable<E> {
 	public List<E> reverse();
 	public boolean findDuplicates();
 	public E[] toArray();
+	public int count(E obj);
 }
