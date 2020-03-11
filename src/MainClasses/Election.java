@@ -20,9 +20,31 @@ public class Election {
 		
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
-		Set<Ballot> ballotSet = new DynamicSet<Ballot>(5);
-		LinkedList<Integer> rankedOneList = new LinkedList<Integer>();
 		
+		/*	Structures to be used
+		 * 
+		 */
+		
+		// List that contains sets of ballot sets
+		LinkedList<Set<Set<Ballot>>> setList = new LinkedList<Set<Set<Ballot>>>();
+		// Set that contains ballot sets
+		
+		Set<Set<Ballot>> setOfBallotSets = new DynamicSet<Set<Ballot>>(5);
+		
+		
+		
+		
+	}
+	
+	/*	Read input files, creates ballot objects, and stores them in a SET
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	private static void readAndWrite(File ballotFile, File candidates) throws FileNotFoundException {
+		// Set that contains ballots
+		DynamicSet<Ballot> ballotSet = new DynamicSet<Ballot>(5);
+		
+		//Read input files
 		Scanner scBallot = new Scanner(ballotFile);
 		Scanner scCandidates = new Scanner(candidates);
 	
@@ -31,20 +53,9 @@ public class Election {
 			Ballot ballot = new Ballot(inputBallotNumber, scCandidates);
 			ballotSet.add(ballot);
 		}
-		System.out.println("Number of ballots: " + countBallots(ballotSet));
-		System.out.println("Number of blank ballot: " + countBlankBallots(ballotSet));
-		System.out.println("Number of invalid ballots: " + invalidBallots(ballotSet));
-		for(Ballot b: ballotSet) {
-			rankedOneList.add(b.getRankedOne());
-		}
-		for(int i = 0; i < rankedOneList.size(); i++) {
-			System.out.print(rankedOneList.get(i) + " ");
-		}
-		System.out.println("");
-		System.out.println(getMin(rankedOneList));
-		ballotSet.iterator().next().eliminate(getMin(rankedOneList));
-		printList(ballotSet.iterator().next().getVotes());
 	}
+	
+	
 	@SuppressWarnings("unchecked")
 	private static <E> void printList(LinkedList<Integer> list) {
 		E[] array = (E[]) list.toArray();
