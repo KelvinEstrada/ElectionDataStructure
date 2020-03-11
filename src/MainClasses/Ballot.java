@@ -15,7 +15,7 @@ public class Ballot{
 	private LinkedList<Integer> votes;
 	private boolean isValidBallot = true;
 
-	public Ballot(String ballotString, Scanner candidates) {
+	public Ballot(String ballotString) {
 	/* An instance of the class stores all information regarding the ballot
 	 * Ballot number, candidate iD and a List containing the votes that were cast by the voters
 	 */
@@ -91,4 +91,12 @@ public class Ballot{
 	public int getCandidatesNum() {
 		return this.votes.size();
 	}
+	
+	/*	Return votes list
+	 * 
+	 */
+	public LinkedList<Integer> getBallotVotes() {
+		return this.votes;
+	}
+	
 }
