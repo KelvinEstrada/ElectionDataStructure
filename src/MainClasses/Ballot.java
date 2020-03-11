@@ -35,79 +35,60 @@ public class Ballot{
 			rankNum++;
 		}
 	}
-	/*	Returns true if the Ballot is valid
-	 *	 
+
+	/*	Returns ballot number
+	 * 	DONE
 	 */
-	public boolean isValidBallot() {
-		return isValidBallot;
-	}
-	/*	Returns List containing all the votes cast in the List
-	 * 
-	 */
-	public LinkedList<Integer> getVotes() {
-		return this.votes;
-	}
-	/*	Return ballot number
-	 * 
-	 */
-	public int getBallotNumber() {
-		return ballotNumber;
+	public int getBallotNum() {
+		return this.ballotNumber;
 	}
 	
-	/*	Return candidate that has the given rank
-	 * 
-	 */
-	public int getCandidateByRank(int rank) {
-		return this.votes.get(rank - 1);
-	}
-	
-	/*	Keep in mind index of the list refers to the rank given to the candidate
-	 *	in that index/position within the List
-	 */
+	/*	Returns candidate rank given its candidateID
+	 * 	Returns -1 if candidate is not in the list
+	 * 	DONE
+	 */	
 	public int getRankByCandidate(int candidateID) {
 		for(int i = 0; i < this.votes.size(); i++) {
-			if(this.votes.get(i) == candidateID) {
+			if(this.votes.get(i).equals(candidateID)) {
 				int target = i;
-				return target + 1;
+				return target+1;
 			}
 		}
-		throw new NoSuchElementException();
+		return -1;
 	}
-	/*	Eliminates candidate given its candidate ID from the actual Ballot
-	 * 
+	
+	/*	Return candidate's ID give its rank
+	 *	DONE
+	 */
+	public int getCandidateByRank(int rank) {
+		for(int i = 0; i < this.votes.size(); i++) {
+			if(i == rank-1) {
+				return this.votes.get(i);
+			}
+		}
+		return -1;
+	}
+	
+	/*	Eliminates given candidate from the ballot
+	 * 	DONE
 	 */
 	public boolean eliminate(int candidateID) {
-		Integer toBeRemoved = this.getIndex(candidateID);
-		return this.getVotes().remove(toBeRemoved);
+		return this.votes.removeElement(candidateID);
 	}
 	
-	/*	Retrieves position of the candidate in the List
+	/*	Prints ballot's state to the console
 	 * 
 	 */
-	public int getIndex(int candidateID) {
-		int target = -1;
-		if(this.getVotes().isEmpty()) {
-			return target;
+	public void printBallot() {
+		for(Integer b: this.votes) {
+			System.out.print(b + " ");
 		}
-		for(int i = 0; i < this.getVotes().size(); i++) {
-			if(this.getVotes().get(i) == candidateID) {
-				target = i;
-				break;
-			}
-		}
-		return target;
-	}
-	/*	Return number one ranked candidate ID in the List
-	 * 
-	 */
-	public int getRankedOne() {
-		return this.getVotes().get(0);
-	}
-	/*	Returns true if the List is blank (has no votes)
-	 * 
-	 */
-	public boolean isBlank() {
-		return this.getVotes().size() == 0;
 	}
 	
+	/*	Return how many candidates are in the ballots
+	 * 
+	 */
+	public int getCandidatesNum() {
+		return this.votes.size();
+	}
 }

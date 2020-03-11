@@ -12,7 +12,7 @@ public class StaticSet<E> implements Set<E> {
 	// array of elements
 	private E elements[];
 	
-	private static final int DEFAULT_SET_SIZE = 10;
+	private static final int DEFAULT_SET_SIZE = 1;
 	
 	public StaticSet(int maxCapacity) {
 		if (maxCapacity < 1)

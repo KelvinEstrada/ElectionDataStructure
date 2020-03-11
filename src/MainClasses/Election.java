@@ -20,88 +20,35 @@ public class Election {
 		
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
+		DynamicSet<Ballot> ballotSet = new DynamicSet<Ballot>(1);
 		
-		/*	Structures to be used
-		 * 
-		 */
+		Scanner sc = new Scanner(ballotFile);
+		Scanner sc2 = new Scanner(candidates);
 		
-		// List that contains sets of ballot sets
-		LinkedList<Set<Set<Ballot>>> setList = new LinkedList<Set<Set<Ballot>>>();
-		// Set that contains ballot sets
-		
-		Set<Set<Ballot>> setOfBallotSets = new DynamicSet<Set<Ballot>>(5);
-		
-		
-		
-		
-	}
-	
-	/*	Read input files, creates ballot objects, and stores them in a SET
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static void readAndWrite(File ballotFile, File candidates) throws FileNotFoundException {
-		// Set that contains ballots
-		DynamicSet<Ballot> ballotSet = new DynamicSet<Ballot>(5);
-		
-		//Read input files
-		Scanner scBallot = new Scanner(ballotFile);
-		Scanner scCandidates = new Scanner(candidates);
-	
-		while(scBallot.hasNextLine()) {
-			String inputBallotNumber = scBallot.nextLine();
-			Ballot ballot = new Ballot(inputBallotNumber, scCandidates);
+		while(sc.hasNext()) {
+			String input1 = sc.nextLine();
+			Ballot ballot = new Ballot(input1, sc2);
 			ballotSet.add(ballot);
 		}
+		Set<DynamicSet<Ballot>> sets = new DynamicSet<DynamicSet<Ballot>>(1);
+		Set<Ballot> b1 = new DynamicSet<Ballot>(1);
+		Set<Ballot> b2 = new DynamicSet<Ballot>(1);
+		Set<Ballot> b3 = new DynamicSet<Ballot>(1);
+		Set<Ballot> b4 = new DynamicSet<Ballot>(1);
+		Set<Ballot> b5 = new DynamicSet<Ballot>(1);
+		for(Ballot b: ballotSet) {
+			for(int i = 1; i <= b.getCandidatesNum(); i++) {
+				if(rankedOne(i,b)) {
+					b1.add(b);
+				}
+			}
+		}
 	}
 	
-	
-	@SuppressWarnings("unchecked")
-	private static <E> void printList(LinkedList<Integer> list) {
-		E[] array = (E[]) list.toArray();
-		for(int i = 0; i < array.length; i++) {
-			System.out.print(array[i] + " ");
-		}
-	}	
-	private static int countBallots(Set<Ballot> ballotSet) {
-		int validCount = 0;
-		for(Ballot b: ballotSet) {
-			if(b.isValidBallot()) {
-				validCount++;
-			}
-		}
-		return validCount;
-	}
-	private static int countBlankBallots(Set<Ballot> ballotSet) {
-		int blankCount = 0;
-		for(Ballot b: ballotSet) {
-			if(b.isBlank()) {
-				blankCount++;
-			}
-		}
-		return blankCount;
-	}
-	private static int invalidBallots(Set<Ballot> ballotSet) {
-		int invalidCount = 0;
-		for(Ballot b: ballotSet) {
-			if(!b.isValidBallot()) {
-				invalidCount++;
-			}
-		}
-		return invalidCount;
-	}
-	/*	Returns candidate with less one's in the Ranked One List
+	/*	Return trues if the candidate is ranked one in the given ballot
 	 * 
 	 */
-	private static int getMin(LinkedList<Integer> list) {
-		int minPos = list.count(list.get(0));
-		int minValue = -1;
-		for(int i = 0; i < list.size(); i++) {
-			if(minPos > list.count(list.get(i))) {
-				minPos = list.count(list.get(i));
-				minValue = list.get(i);
-			}
-		}
-		return minValue;
+	private static boolean rankedOne(int candidateID, Ballot ballot) {
+		return ballot.getRankByCandidate(candidateID) == 1;
 	}
 }
