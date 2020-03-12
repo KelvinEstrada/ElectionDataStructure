@@ -20,7 +20,7 @@ public class Election {
 
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
-		DynamicSet<Ballot> ballotSet = new DynamicSet<Ballot>(1);
+		Set<Ballot> ballotSet = new DynamicSet<Ballot>(1);
 
 		Scanner sc = new Scanner(ballotFile);
 		LinkedList<String> ids = candidatesList(candidates);
@@ -30,19 +30,17 @@ public class Election {
 			Ballot ballot = new Ballot(input1);
 			ballotSet.add(ballot);
 		}
-		/*	Store set of ballots inside another set. The set of ballots contains the ballot's numbers
+		/*	Store set of ballots inside a list. The set of ballots contains the ballot's numbers
 		 * 	where the candidate is ranked #1. 
 		 */
-		Set<Ballot> ballotsForCandidate = new DynamicSet<Ballot>(1);
-		Set<Set<Ballot>> sets = new DynamicSet<Set<Ballot>>(1);
-		for(int i = 0; i < ids.size(); i++) {
+		List<Set<Ballot>> listOfSets = new LinkedList<Set<Ballot>>();	
+		for(int i = 1; i <= ids.size(); i++) {
 			for(Ballot b: ballotSet) {
-				Set<Ballot> setBallot = storeBallot(i+1, b, ballotsForCandidate);
-				sets.add((Set<Ballot>) setBallot);
+				//Set<Ballot> setBallot = storeBallot(i+1, b);
+				listOfSets.add(storeBallot(i, b));
 			}
 		}
-		Set<Integer> eliminatedCandidates = new DynamicSet<Integer>(1);
-		LinkedList<Integer> rankCount = new LinkedList<Integer>();
+		printList(listOfSets);
 		
 	}
 
@@ -56,10 +54,11 @@ public class Election {
 	/*	This method stores the ballot (inside a set) where the given candidate is ranked one
 	 * 
 	 */
-	private static Set<Ballot> storeBallot(int candidateID, Ballot ballot, Set<Ballot> ballotsForCandidate) {
-		//Set<Ballot> ballotsForCandidate = new DynamicSet<Ballot>(1);
-		if(ballot.getRankByCandidate(candidateID) == 1) {
-			ballotsForCandidate.add(ballot);
+	private static Set<Ballot> storeBallot(int candidateID, Ballot ballot) {
+		Set<Ballot> ballotsForCandidate = new DynamicSet<Ballot>(5);
+		Ballot b = ballot;
+		if(b.getRankByCandidate(candidateID) == 1) {
+			ballotsForCandidate.add(b);
 		}
 		return ballotsForCandidate;
 	}
@@ -77,15 +76,16 @@ public class Election {
 		return candidatesList;
 	}
 
-	/*	Prints a List Strings
+	/*	Prints a List
 	 * 
 	 */
-	private static void printList(LinkedList<String> ids) {
+	private static void printList(List<Set<Ballot>> ids) {
 		for(int i = 0; i < ids.size(); i++) {
-			System.out.println(ids.get(i));
+			for(Ballot b: ids.get(i)) {
+				System.out.println(b.getBallotNum());
+			}
 		}
 	}
-
 }
 
 

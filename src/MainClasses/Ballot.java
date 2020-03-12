@@ -99,4 +99,10 @@ public class Ballot{
 		return this.votes;
 	}
 	
+	/*	Return #1 ranked candidate
+	 * 
+	 */
+	public int getFirst() {
+		return this.votes.get(0);
+	}
 }
