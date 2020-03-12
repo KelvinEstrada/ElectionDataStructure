@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+import DataStructures.ArrayList;
 import DataStructures.DynamicSet;
 import DataStructures.LinkedList;
 import Interfaces.List;
@@ -30,39 +31,10 @@ public class Election {
 			Ballot ballot = new Ballot(input1);
 			ballotSet.add(ballot);
 		}
-		/*	Store set of ballots inside a list. The set of ballots contains the ballot's numbers
-		 * 	where the candidate is ranked #1. 
-		 */
-		List<Set<Ballot>> listOfSets = new LinkedList<Set<Ballot>>();	
-		for(int i = 1; i <= ids.size(); i++) {
-			for(Ballot b: ballotSet) {
-				//Set<Ballot> setBallot = storeBallot(i+1, b);
-				listOfSets.add(storeBallot(i, b));
-			}
-		}
-		printList(listOfSets);
+		//ArrayList<Set<Ballot>> list = new ArrayList<Set<Ballot>>();
 		
-	}
 
-	/*	Return #1 candidate in the ballot
-	 * 
-	 */
-	private static int rankedOne(Ballot ballot) {
-		return ballot.getBallotVotes().first();
 	}
-
-	/*	This method stores the ballot (inside a set) where the given candidate is ranked one
-	 * 
-	 */
-	private static Set<Ballot> storeBallot(int candidateID, Ballot ballot) {
-		Set<Ballot> ballotsForCandidate = new DynamicSet<Ballot>(5);
-		Ballot b = ballot;
-		if(b.getRankByCandidate(candidateID) == 1) {
-			ballotsForCandidate.add(b);
-		}
-		return ballotsForCandidate;
-	}
-
 	/*	Store candidates in a List
 	 * 
 	 */
@@ -76,16 +48,6 @@ public class Election {
 		return candidatesList;
 	}
 
-	/*	Prints a List
-	 * 
-	 */
-	private static void printList(List<Set<Ballot>> ids) {
-		for(int i = 0; i < ids.size(); i++) {
-			for(Ballot b: ids.get(i)) {
-				System.out.println(b.getBallotNum());
-			}
-		}
-	}
 }
 
 
