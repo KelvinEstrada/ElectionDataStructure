@@ -31,8 +31,22 @@ public class Election {
 			Ballot ballot = new Ballot(input1);
 			ballotSet.add(ballot);
 		}
-		//ArrayList<Set<Ballot>> list = new ArrayList<Set<Ballot>>();
-		
+		System.out.println("Number of ballots: " + ballotSet.size());
+		System.out.println("Number of blank ballots: " + 0);
+		List<Set<Ballot>> setList = new LinkedList<Set<Ballot>>();
+		for(int i = 1; i <= ids.size(); i++) {
+			for(Ballot b: ballotSet) {
+				Set<Ballot> sb = store(i, b);
+				setList.add(sb);
+			}
+		}
+		for(int i = 0; i < setList.size(); i++) {
+			for(Ballot b: setList.get(i)) {
+				
+			}
+		}
+		System.out.println("Round 1:" + " was eliminated with... ");
+	
 
 	}
 	/*	Store candidates in a List
@@ -46,6 +60,14 @@ public class Election {
 			candidatesList.add(input1);
 		}
 		return candidatesList;
+	}
+	
+	private static Set<Ballot> store(int id, Ballot ballot) {
+		Set<Ballot> result = new DynamicSet<Ballot>(3);
+		if(ballot.getRankByCandidate(id) == 1) {
+			result.add(ballot);
+		}
+		return result;
 	}
 
 }
