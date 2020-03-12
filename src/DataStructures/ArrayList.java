@@ -212,38 +212,9 @@ public class ArrayList<E> implements List<E> {
 	}
 
 	@Override
-	public List<E> reverse() {
-		if(this.isEmpty())
-			return new ArrayList<E>(0);
-		else {
-
-			List<E> result = new ArrayList<E>(this.size());		
-			for(int i = this.size()-1; i >= 0; i--) {
-				result.add(this.elements[i]);
-
-			}
-			return result;
-
-		}	
-	}
-
-	@Override
-	public boolean findDuplicates() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public E[] toArray() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public int count(E obj) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 
 }

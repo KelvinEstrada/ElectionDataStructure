@@ -286,48 +286,9 @@ public class LinkedList<E> implements List<E> {
 	}
 
 	@Override
-	public List<E> reverse() {
-		List<E> result = new LinkedList<E>();
-		Node curNode = header;
-		Node nextNode = curNode.getNext();
-		while(this.size() > 0) {
-			if(nextNode != null) {
-				curNode = nextNode;
-				nextNode = nextNode.getNext();
-			}
-			else {
-				result.add(curNode.getValue());
-				this.removeElement(curNode.getValue());
-				curNode = header;
-				nextNode = curNode.getNext();
-			}
-		}
-		return result;
-	}
-
-	@Override
 	public int replaceAll(E e, E f) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public boolean findDuplicates() {
-		Node curNode = header;
-		Node nextNode = header.getNext();
-		while(nextNode != null) 
-		{
-			if(nextNode.getValue().equals(nextNode.getNext().getValue())) 
-			{
-				return true;
-			}
-			else 
-			{
-				curNode = nextNode;
-				nextNode = curNode.getNext();
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -338,20 +299,5 @@ public class LinkedList<E> implements List<E> {
 			asArray[i] = this.get(i);
 		}
 		return asArray;
-	}
-
-	@Override
-	public int count(E obj) {
-		Node curNode = header;
-		Node nextNode = curNode.getNext();
-		int count = 0;
-		while(nextNode != null) {
-			if(nextNode.getValue().equals(obj)) {
-				count++;
-			}
-			curNode = nextNode;
-			nextNode = curNode.getNext();
-		}
-		return count;
 	}
 }

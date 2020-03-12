@@ -29,7 +29,7 @@ public class Ballot{
 			}
 			int candidateID = Integer.parseInt(ballotValues[i].substring(0,1));
 			/* The list's index is a reference to the rank given by the voter.
-			 * 
+			 * If candidate is in position 1, he/she has rank #1 and so on...
 			 */
 			this.votes.add(candidateID);
 			rankNum++;
