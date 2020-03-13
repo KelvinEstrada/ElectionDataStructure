@@ -21,7 +21,10 @@ public class Election {
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws FileNotFoundException {
 
-		String outputFile = "output.txt";
+		/*	After running the program, refresh the project to see the output.txt file in the Resources folder
+		 * 
+		 */
+		File outputFile = new File("Resources/output.txt");
 		PrintWriter output = new PrintWriter(outputFile);
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
@@ -40,43 +43,54 @@ public class Election {
 		output.println("Number of ballots: " + ballotSet.size());
 		output.println("Number of blank ballots: " + blankBallots(ballotSet));
 		output.println("Number of invalid ballots: " + invalidBallots(ballotSet));
-		List<Set<Ballot>> ballotSetList = ones(ids, ballotSet);
-		//		for(int i = 0; i < ballotSetList.size(); i++) {
-		//			for(Ballot b: ballotSetList.get(i)) {
-		//				printList(b.getBallotVotes());
-		//				System.out.println("");
-		//			}
-		//		}
-		int candidateToEliminate = getCandidateToEliminate(ballotSetList);
-		output.println("Round 1: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetList) + " #1's");
-		editSet(getSetToChange(ballotSetList), candidateToEliminate);
-		int max = max(ballotSetList);
+		List<Set<Ballot>> ballotSetListOnes = ones(ids, ballotSet);
+		int candidateToEliminate = 0;
+		Set<Integer> eliminated = new DynamicSet<Integer>(1);
+		for(int i = 1; i <= ids.size(); i++) {
+			candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
+			System.out.println("First candidate to eliminate is " + candidateToEliminate);
+			eliminated.add(candidateToEliminate);
+			output.println("Round " + (i+1) +": " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
+			editSet(ballotSetListOnes, candidateToEliminate);
+			if(onesCount(max(ballotSetListOnes), ballotSetListOnes) > ballotSetListOnes.size()-1) {
+				break;
+			}
+		}
+		output.println("Winner: " + name(max(ballotSetListOnes), ids) + " wins with " + onesCount(max(ballotSetListOnes), ballotSetListOnes) + " #1's");
+//		int candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
+//		System.out.println("First candidate to eliminate is " + candidateToEliminate);
+//		eliminated.add(candidateToEliminate);
+//		output.println("Round 1: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
+//		editSet(ballotSetListOnes, candidateToEliminate);
+//
+//		candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
+//		System.out.println("Second candidate to eliminate is " + candidateToEliminate);
+//		eliminated.add(candidateToEliminate);
+//		output.println("Round 2: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
+//		editSet(ballotSetListOnes, candidateToEliminate);
+//		
+//		candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
+//		System.out.println("Third candidate to eliminate is " + candidateToEliminate);
+//		eliminated.add(candidateToEliminate);
+//		output.println("Round 3: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
+//		editSet(ballotSetListOnes, candidateToEliminate);
+//		
+//		if(onesCount(max(ballotSetListOnes), ballotSetListOnes) > ballotSetListOnes.size()/2) {
+//			output.println("Winner: " + name(max(ballotSetListOnes), ids) + " wins with " + onesCount(max(ballotSetListOnes), ballotSetListOnes) + " #1's");
+//		}
 
-		int candidateToEliminate2 = getCandidateToEliminate(ballotSetList);
-		output.println("Round 2: " + name(candidateToEliminate2, ids) + " was eliminated with " + onesCount(candidateToEliminate2, ballotSetList) + " #1's");
-		editSet(getSetToChange(ballotSetList), candidateToEliminate2);
-		max = max(ballotSetList);
-
-
-		//int candidateToEliminate3 = getCandidateToEliminate(ballotSetList);
-		//System.out.println(candidateToEliminate3);
-		//int position3 = setPos(ballotSetList);
-		//editSet(getSetToChange(ballotSetList), candidateToEliminate3);
-		//max = max(ballotSetList);
-		//System.out.println(max);
-
-		//		for(int i = 0; i < ballotSetList.size(); i++) {
-		//			for(Ballot b: ballotSetList.get(i)) {
-		//				printList(b.getBallotVotes());
-		//				System.out.println("");
-		//			}
-		//		}
+		for(int i = 0; i < ballotSetListOnes.size(); i++) {
+			for(Ballot b: ballotSetListOnes.get(i)) {
+				printList(b.getBallotVotes());
+				System.out.println("");
+			}
+		}
 		output.close();
 	}
 	/*	Store candidates in a List
 	 * 
 	 */
-	private static LinkedList<String> candidatesList(File candidates) throws FileNotFoundException{
+	public static LinkedList<String> candidatesList(File candidates) throws FileNotFoundException{
 		LinkedList<String> candidatesList = new LinkedList<String>();
 		Scanner sc2 = new Scanner(candidates);
 		while(sc2.hasNext()) {
@@ -88,7 +102,7 @@ public class Election {
 	/*	Print list for debugging
 	 * 
 	 */
-	private static void printList(LinkedList<Integer> list) {
+	public static void printList(LinkedList<Integer> list) {
 		for(int i = 0; i < list.size(); i++) {
 			System.out.print(list.get(i) + " ");
 		}
@@ -96,7 +110,7 @@ public class Election {
 	/*	Returns a List of sets of ballots that contain each candidate's ballot where they are ranked #1
 	 * 
 	 */
-	private static List<Set<Ballot>> ones(LinkedList<String> ids, Set<Ballot> ballotSet) {
+	public static List<Set<Ballot>> ones(LinkedList<String> ids, Set<Ballot> ballotSet) {
 		List<Set<Ballot>> setList = new LinkedList<Set<Ballot>>();
 		for(int i = 0; i < ids.size(); i++) {
 			Set<Ballot> ones = new DynamicSet<Ballot>(1);
@@ -109,6 +123,9 @@ public class Election {
 		}
 		return setList;
 	}
+	/*	Counts the number of ones in a set for a specified candidate
+	 * 
+	 */
 	public static int onesCount(int candidateID, List<Set<Ballot>> ones) {
 		int count = 0;
 		for(int i = 0; i < ones.size(); i++) {
@@ -119,64 +136,46 @@ public class Election {
 			}
 		}
 		return count;
-
 	}
 	/*	Returns candidate ID number to be eliminated
 	 * 
 	 */
-	private static int getCandidateToEliminate(List<Set<Ballot>> ones) {
-		int min = ones.get(0).size();
-		for(int i = 1; i < ones.size(); i++) {
+	public static int getCandidateToEliminate(List<Set<Ballot>> ones, Set<Integer> eliminatedCandidates) {
+		int min = onesCount(1, ones);
+		for(int i = 0; i < ones.size(); i++) {
 			for(Ballot b: ones.get(i)) {
-				if(ones.get(i).size() < min) {
-					if(b.getFirst() != -1) {
-						min = b.getFirst();
-					}
+				if(!eliminatedCandidates.isMember(b.getFirst()) && onesCount(b.getFirst(), ones) < min) {
+					min = b.getFirst();
 				}
 			}
 		}
 		return min;
 	}
-	private static Set<Ballot> getSetToChange(List<Set<Ballot>> ones){
+
+	public static Set<Ballot> getSetToChange(List<Set<Ballot>> ones){
 		int min = ones.get(0).size();
 		Set<Ballot> minBallotSet = ones.get(0);
 		for(int i = 1; i < ones.size(); i++) {
 			for(Ballot b: ones.get(i)) {
 				if(ones.get(i).size() < min) {
-					if(b.getFirst() != -1) {
-						minBallotSet = ones.get(i);
-						min = b.getFirst();
-					}
+					minBallotSet = ones.get(i);
+					min = b.getFirst();
 				}
 			}
 		}
 		return minBallotSet;
 	}
-	private static void editSet(Set<Ballot> ballotSet, int candidateID) {
-		ballotSet.iterator().next().eliminate(candidateID);
-	}
-	/*	Return Set position that is to be altered when removing a candidate from a ballot
-	 * 
-	 */
-	private static int setPos(List<Set<Ballot>> ones) {
-		int min = ones.get(0).size();
-		int target = -1;
-		for(int i = 1; i < ones.size(); i++) {
-			for(Ballot b: ones.get(i)) {
-				if(b.getFirst() != -1) {
-					if(ones.get(i).size() < min) {
-						target = i;
-						min = b.getFirst();
-					}
-				}
+	public static void editSet(List<Set<Ballot>> ballotSetList, int candidateID) {
+		for(int i = 0; i < ballotSetList.size(); i++) {
+			for(Ballot b: ballotSetList.get(i)) {
+					b.eliminate(candidateID);	
 			}
 		}
-		return target;
 	}
 	/*	Returns maximum ranked candidate
 	 * 
 	 */
-	private static int max(List<Set<Ballot>> ones) {
+	public static int max(List<Set<Ballot>> ones) {
 		int max = ones.get(0).size();
 		for(int i = 1; i < ones.size(); i++) {
 			for(Ballot b: ones.get(i)) {

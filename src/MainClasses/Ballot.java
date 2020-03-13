@@ -73,9 +73,8 @@ public class Ballot{
 	 * 	DONE
 	 */
 	public boolean eliminate(int candidateID) {
-		if(candidateID != -1) {
-			int index = this.getRankByCandidate(candidateID);
-			this.votes.set(index-1, -1);
+		if(candidateID > 0) {
+			this.votes.removeAll(candidateID);
 		}
 		return true;
 	}
