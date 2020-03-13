@@ -1,0 +1,5 @@
+Number of ballots: 10
+Number of blank ballots: 0
+Number of invalid ballots: 0
+Round 1: Lola Mento was eliminated with 1 #1's
+Round 2: Juan Lopez was eliminated with 1 #1's

@@ -2,6 +2,8 @@ package MainClasses;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Formatter;
 import java.util.Scanner;
 
 import DataStructures.ArrayList;
@@ -19,13 +21,14 @@ public class Election {
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws FileNotFoundException {
 
+		String outputFile = "output.txt";
+		PrintWriter output = new PrintWriter(outputFile);
 		File ballotFile = new File(BALLOTS);
 		File candidates = new File(CANDIDATES);
-		
-		//This is the official set of ballots
+
 		Set<Ballot> ballotSet = new DynamicSet<Ballot>(1);
-		Set<Integer> eliminatedCandidates = new DynamicSet<Integer>(1);
-		
+		//Set<Integer> eliminatedCandidates = new DynamicSet<Integer>(1);
+
 		Scanner sc = new Scanner(ballotFile);
 		LinkedList<String> ids = candidatesList(candidates);
 
@@ -34,55 +37,42 @@ public class Election {
 			Ballot ballot = new Ballot(input1);
 			ballotSet.add(ballot);
 		}
-		System.out.println("Number of ballots: " + ballotSet.size());
-		System.out.println("Number of blank ballots: " + 0);
-		List<Set<Ballot>> setListByOnes = new LinkedList<Set<Ballot>>();
-		List<Set<Ballot>> setListByTwos = new LinkedList<Set<Ballot>>();
-		System.out.println("Round 1:" + " was eliminated with... ");
-			for(int i = 1; i <= ids.size(); i++) {
-				//Creates a Set of ballots for each candidate in the election
-				Set<Ballot> sb = new DynamicSet<Ballot>(1);
-				for(Ballot b: ballotSet) {
-					if(b.getRankByCandidate(i) == 1) {
-						sb.add(b);
-						setListByOnes.add(sb);
-					}
-				}
-			}
-			for(int i = 1; i <= ids.size(); i++) {
-				//Creates a Set of ballots for each candidate in the election
-				Set<Ballot> sb = new DynamicSet<Ballot>(1);
-				for(Ballot b: ballotSet) {
-					if(b.getRankByCandidate(i) == 2) {
-						sb.add(b);
-						setListByTwos.add(sb);
-					}
-				}
-			}
-			Set<Ballot> absoluteMin;
-			for(Ballot b: ballotSet) {
-				Set<Ballot> min1 = findMinByOnes(setListByOnes);
-				Set<Ballot> min2 = findMinByTwos(setListByTwos);
-				if(min1.size() < min2.size()) {
-					absoluteMin = min1;
-				}else {absoluteMin = min2;}
-				int candidateToEliminate = absoluteMin.iterator().next().getFirst();
-				System.out.println(candidateToEliminate);
-				//for(Ballot b1: ballotSet) {
-					for(Ballot b2: absoluteMin) {
-						if(b.getBallotNum() == b2.getBallotNum()) {
-							b.eliminate(candidateToEliminate);
-						}
-					}
-				//}
-				eliminatedCandidates.add(candidateToEliminate);
-				for(Ballot b1: ballotSet) {
-					printList(b1.getBallotVotes());
-					System.out.println("");
-				}
-				
-			}
-		}
+		output.println("Number of ballots: " + ballotSet.size());
+		output.println("Number of blank ballots: " + blankBallots(ballotSet));
+		output.println("Number of invalid ballots: " + invalidBallots(ballotSet));
+		List<Set<Ballot>> ballotSetList = ones(ids, ballotSet);
+		//		for(int i = 0; i < ballotSetList.size(); i++) {
+		//			for(Ballot b: ballotSetList.get(i)) {
+		//				printList(b.getBallotVotes());
+		//				System.out.println("");
+		//			}
+		//		}
+		int candidateToEliminate = getCandidateToEliminate(ballotSetList);
+		output.println("Round 1: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetList) + " #1's");
+		editSet(getSetToChange(ballotSetList), candidateToEliminate);
+		int max = max(ballotSetList);
+
+		int candidateToEliminate2 = getCandidateToEliminate(ballotSetList);
+		output.println("Round 2: " + name(candidateToEliminate2, ids) + " was eliminated with " + onesCount(candidateToEliminate2, ballotSetList) + " #1's");
+		editSet(getSetToChange(ballotSetList), candidateToEliminate2);
+		max = max(ballotSetList);
+
+
+		//int candidateToEliminate3 = getCandidateToEliminate(ballotSetList);
+		//System.out.println(candidateToEliminate3);
+		//int position3 = setPos(ballotSetList);
+		//editSet(getSetToChange(ballotSetList), candidateToEliminate3);
+		//max = max(ballotSetList);
+		//System.out.println(max);
+
+		//		for(int i = 0; i < ballotSetList.size(); i++) {
+		//			for(Ballot b: ballotSetList.get(i)) {
+		//				printList(b.getBallotVotes());
+		//				System.out.println("");
+		//			}
+		//		}
+		output.close();
+	}
 	/*	Store candidates in a List
 	 * 
 	 */
@@ -95,51 +85,144 @@ public class Election {
 		}
 		return candidatesList;
 	}
-	/*	Find least preferred candidate in the List (with less 1's and returns the Ballot set of the least 
-	 *  preferred candidate
-	 * 
-	 */
-	private static Set<Ballot> findMinByOnes(List<Set<Ballot>> setListByOnes) {
-		//Set the first set in the list to be the one with less 1's
-		//The size of the Set is the number of one's that the candidate in the list has.
-		//The index of the list is a reference to the candidate number
-		int min = setListByOnes.get(0).size();
-		Set<Ballot> minBallotSet = setListByOnes.get(0);
-		for(int i = 1; i < setListByOnes.size(); i++) {
-			if(setListByOnes.get(i).size() < min) {
-					min = setListByOnes.get(i).size();
-					minBallotSet = setListByOnes.get(i);
-			}
-		}
-		return minBallotSet;
-	}
-	/*	Find least preferred candidate in the List (with less 1's and returns the Ballot set of the least 
-	 *  preferred candidate
-	 * 
-	 */
-	private static Set<Ballot> findMinByTwos(List<Set<Ballot>> setListByTwos) {
-		//Set the first set in the list to be the one with less 1's
-		//The size of the Set is the number of one's that the candidate in the list has.
-		//The index of the list is a reference to the candidate number
-		int min = setListByTwos.get(0).size();
-		Set<Ballot> minBallotSet = setListByTwos.get(0);
-		for(int i = 1; i < setListByTwos.size(); i++) {
-			if(setListByTwos.get(i).size() < min) {
-					min = setListByTwos.get(i).size();
-					minBallotSet = setListByTwos.get(i);
-			}
-		}
-		return minBallotSet;
-	}
 	/*	Print list for debugging
 	 * 
 	 */
 	private static void printList(LinkedList<Integer> list) {
 		for(int i = 0; i < list.size(); i++) {
-			System.out.print(list.get(i));
+			System.out.print(list.get(i) + " ");
 		}
 	}
-}
+	/*	Returns a List of sets of ballots that contain each candidate's ballot where they are ranked #1
+	 * 
+	 */
+	private static List<Set<Ballot>> ones(LinkedList<String> ids, Set<Ballot> ballotSet) {
+		List<Set<Ballot>> setList = new LinkedList<Set<Ballot>>();
+		for(int i = 0; i < ids.size(); i++) {
+			Set<Ballot> ones = new DynamicSet<Ballot>(1);
+			for(Ballot b: ballotSet) {
+				if(Integer.parseInt(ids.get(i).substring(ids.get(i).length()-1)) == b.getFirst()) {
+					ones.add(b);
+				}
+			}
+			setList.add(ones);
+		}
+		return setList;
+	}
+	public static int onesCount(int candidateID, List<Set<Ballot>> ones) {
+		int count = 0;
+		for(int i = 0; i < ones.size(); i++) {
+			for(Ballot b: ones.get(i)) {
+				if(b.getFirst() == candidateID) {
+					count++;
+				}
+			}
+		}
+		return count;
 
+	}
+	/*	Returns candidate ID number to be eliminated
+	 * 
+	 */
+	private static int getCandidateToEliminate(List<Set<Ballot>> ones) {
+		int min = ones.get(0).size();
+		for(int i = 1; i < ones.size(); i++) {
+			for(Ballot b: ones.get(i)) {
+				if(ones.get(i).size() < min) {
+					if(b.getFirst() != -1) {
+						min = b.getFirst();
+					}
+				}
+			}
+		}
+		return min;
+	}
+	private static Set<Ballot> getSetToChange(List<Set<Ballot>> ones){
+		int min = ones.get(0).size();
+		Set<Ballot> minBallotSet = ones.get(0);
+		for(int i = 1; i < ones.size(); i++) {
+			for(Ballot b: ones.get(i)) {
+				if(ones.get(i).size() < min) {
+					if(b.getFirst() != -1) {
+						minBallotSet = ones.get(i);
+						min = b.getFirst();
+					}
+				}
+			}
+		}
+		return minBallotSet;
+	}
+	private static void editSet(Set<Ballot> ballotSet, int candidateID) {
+		ballotSet.iterator().next().eliminate(candidateID);
+	}
+	/*	Return Set position that is to be altered when removing a candidate from a ballot
+	 * 
+	 */
+	private static int setPos(List<Set<Ballot>> ones) {
+		int min = ones.get(0).size();
+		int target = -1;
+		for(int i = 1; i < ones.size(); i++) {
+			for(Ballot b: ones.get(i)) {
+				if(b.getFirst() != -1) {
+					if(ones.get(i).size() < min) {
+						target = i;
+						min = b.getFirst();
+					}
+				}
+			}
+		}
+		return target;
+	}
+	/*	Returns maximum ranked candidate
+	 * 
+	 */
+	private static int max(List<Set<Ballot>> ones) {
+		int max = ones.get(0).size();
+		for(int i = 1; i < ones.size(); i++) {
+			for(Ballot b: ones.get(i)) {
+				if(ones.get(i).size() > max) {
+					if(b.getFirst() != -1) {
+						max = b.getFirst();
+					}
+				}
+			}
+		}
+		return max;
+	}
+	/*	Counts the number of blank ballots in the ballot set
+	 * 
+	 */
+	public static int blankBallots(Set<Ballot> ballotSet) {
+		int count = 0;
+		for(Ballot b: ballotSet) {
+			if(b.isBlankBallot())
+				count++;
+		}
+		return count;
+	}
+	/*	Counts the number of blank ballots in the ballot set
+	 * 
+	 */
+	public static int invalidBallots(Set<Ballot> ballotSet) {
+		int count = 0;
+		for(Ballot b: ballotSet) {
+			if(!b.isValid())
+				count++;
+		}
+		return count;
+	}
+	/*	Gets candidate name given their candidate ID
+	 * 
+	 */
+	public static String name(int candidateID, LinkedList<String> names) {
+		String name = "";
+		for(int i = 0; i < names.size(); i++) {
+			if(Integer.parseInt(names.get(i).substring(names.get(i).length()-1)) == candidateID) {
+				name = names.get(i).substring(0, names.get(i).length()-2);
+			}
+		}
+		return name;
+	}
+}
 
 

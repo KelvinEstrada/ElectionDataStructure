@@ -16,9 +16,9 @@ public class Ballot{
 	private boolean isValidBallot = true;
 
 	public Ballot(String ballotString) {
-	/* An instance of the class stores all information regarding the ballot
-	 * Ballot number, candidate iD and a List containing the votes that were cast by the voters
-	 */
+		/* An instance of the class stores all information regarding the ballot
+		 * Ballot number, candidate iD and a List containing the votes that were cast by the voters
+		 */
 		String ballotValues[] = ballotString.split(",");
 		this.ballotNumber = Integer.parseInt(ballotValues[0]);	//Retrieves ballot number from string line and stores it as an integer value
 		this.votes = new LinkedList<Integer>();
@@ -42,7 +42,7 @@ public class Ballot{
 	public int getBallotNum() {
 		return this.ballotNumber;
 	}
-	
+
 	/*	Returns candidate rank given its candidateID
 	 * 	Returns -1 if candidate is not in the list
 	 * 	DONE
@@ -56,7 +56,7 @@ public class Ballot{
 		}
 		return -1;
 	}
-	
+
 	/*	Return candidate's ID give its rank
 	 *	DONE
 	 */
@@ -68,14 +68,18 @@ public class Ballot{
 		}
 		return -1;
 	}
-	
-	/*	Eliminates given candidate from the ballot
+
+	/*	Set given candidate from the ballot to be -1
 	 * 	DONE
 	 */
 	public boolean eliminate(int candidateID) {
-		return this.votes.removeElement(candidateID);
+		if(candidateID != -1) {
+			int index = this.getRankByCandidate(candidateID);
+			this.votes.set(index-1, -1);
+		}
+		return true;
 	}
-	
+
 	/*	Prints ballot's state to the console
 	 * 
 	 */
@@ -84,25 +88,39 @@ public class Ballot{
 			System.out.print(b + " ");
 		}
 	}
-	
+
 	/*	Return how many candidates are in the ballots
 	 * 
 	 */
 	public int getCandidatesNum() {
 		return this.votes.size();
 	}
-	
+
 	/*	Return votes list
 	 * 
 	 */
 	public LinkedList<Integer> getBallotVotes() {
 		return this.votes;
 	}
-	
+
 	/*	Return #1 ranked candidate
 	 * 
 	 */
 	public int getFirst() {
 		return this.votes.get(0);
+	}
+	/*	Return true if the ballot is blank
+	 * 
+	 */
+	public boolean isBlankBallot() {
+		if(this.getBallotVotes().size() == 0)
+			return true;
+		return false;
+	}
+	/*	Returns true if the ballot is valid
+	 * 
+	 */
+	public boolean isValid() {
+		return this.isValidBallot;
 	}
 }
