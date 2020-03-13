@@ -1,3 +1,7 @@
+/*	Author: Kelvin O. Estrada Soto
+ * 	ICOM4035 - 096
+ * 
+ */
 package MainClasses;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,8 +34,7 @@ public class Election {
 		File candidates = new File(CANDIDATES);
 
 		Set<Ballot> ballotSet = new DynamicSet<Ballot>(1);
-		//Set<Integer> eliminatedCandidates = new DynamicSet<Integer>(1);
-
+		Set<Integer> eliminated = new DynamicSet<Integer>(1);
 		Scanner sc = new Scanner(ballotFile);
 		LinkedList<String> ids = candidatesList(candidates);
 
@@ -45,10 +48,8 @@ public class Election {
 		output.println("Number of invalid ballots: " + invalidBallots(ballotSet));
 		List<Set<Ballot>> ballotSetListOnes = ones(ids, ballotSet);
 		int candidateToEliminate = 0;
-		Set<Integer> eliminated = new DynamicSet<Integer>(1);
 		for(int i = 1; i <= ids.size(); i++) {
 			candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
-			System.out.println("First candidate to eliminate is " + candidateToEliminate);
 			eliminated.add(candidateToEliminate);
 			output.println("Round " + (i+1) +": " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
 			editSet(ballotSetListOnes, candidateToEliminate);
@@ -57,34 +58,6 @@ public class Election {
 			}
 		}
 		output.println("Winner: " + name(max(ballotSetListOnes), ids) + " wins with " + onesCount(max(ballotSetListOnes), ballotSetListOnes) + " #1's");
-//		int candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
-//		System.out.println("First candidate to eliminate is " + candidateToEliminate);
-//		eliminated.add(candidateToEliminate);
-//		output.println("Round 1: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
-//		editSet(ballotSetListOnes, candidateToEliminate);
-//
-//		candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
-//		System.out.println("Second candidate to eliminate is " + candidateToEliminate);
-//		eliminated.add(candidateToEliminate);
-//		output.println("Round 2: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
-//		editSet(ballotSetListOnes, candidateToEliminate);
-//		
-//		candidateToEliminate = getCandidateToEliminate(ballotSetListOnes, eliminated);
-//		System.out.println("Third candidate to eliminate is " + candidateToEliminate);
-//		eliminated.add(candidateToEliminate);
-//		output.println("Round 3: " + name(candidateToEliminate, ids) + " was eliminated with " + onesCount(candidateToEliminate, ballotSetListOnes) + " #1's");
-//		editSet(ballotSetListOnes, candidateToEliminate);
-//		
-//		if(onesCount(max(ballotSetListOnes), ballotSetListOnes) > ballotSetListOnes.size()/2) {
-//			output.println("Winner: " + name(max(ballotSetListOnes), ids) + " wins with " + onesCount(max(ballotSetListOnes), ballotSetListOnes) + " #1's");
-//		}
-
-		for(int i = 0; i < ballotSetListOnes.size(); i++) {
-			for(Ballot b: ballotSetListOnes.get(i)) {
-				printList(b.getBallotVotes());
-				System.out.println("");
-			}
-		}
 		output.close();
 	}
 	/*	Store candidates in a List
@@ -102,11 +75,11 @@ public class Election {
 	/*	Print list for debugging
 	 * 
 	 */
-	public static void printList(LinkedList<Integer> list) {
-		for(int i = 0; i < list.size(); i++) {
-			System.out.print(list.get(i) + " ");
-		}
-	}
+//	public static void printList(LinkedList<Integer> list) {
+//		for(int i = 0; i < list.size(); i++) {
+//			System.out.print(list.get(i) + " ");
+//		}
+//	}
 	/*	Returns a List of sets of ballots that contain each candidate's ballot where they are ranked #1
 	 * 
 	 */
@@ -151,7 +124,9 @@ public class Election {
 		}
 		return min;
 	}
-
+	/*	Return a Set of Ballots that need to be altered after removing a candidate
+	 * 
+	 */
 	public static Set<Ballot> getSetToChange(List<Set<Ballot>> ones){
 		int min = ones.get(0).size();
 		Set<Ballot> minBallotSet = ones.get(0);
@@ -199,7 +174,7 @@ public class Election {
 		}
 		return count;
 	}
-	/*	Counts the number of blank ballots in the ballot set
+	/*	Counts the number of invalid ballots in the ballot set
 	 * 
 	 */
 	public static int invalidBallots(Set<Ballot> ballotSet) {
@@ -210,7 +185,7 @@ public class Election {
 		}
 		return count;
 	}
-	/*	Gets candidate name given their candidate ID
+	/*	Gets candidate name given their candidate ID and the List containing the candidates names
 	 * 
 	 */
 	public static String name(int candidateID, LinkedList<String> names) {
